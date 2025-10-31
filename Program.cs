@@ -1,10 +1,11 @@
-﻿using SnakeGame;
-
-class Program
+namespace SnakeGame
 {
-    static void Main()
+    class Program
     {
-        GameManager game = new GameManager(40, 20);
-        game.RunGame();
+        static void Main()
+        {
+            GameManager game = new GameManager(40, 20);
+            game.RunGame();
+        }
     }
 }
