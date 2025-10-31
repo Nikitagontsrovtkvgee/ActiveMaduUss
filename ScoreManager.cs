@@ -1,78 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace SnakeGame
 {
     public class ScoreManager
     {
-        private readonly string _scoreFilePath;
-        private readonly List<(string Player, int Score)> _scores = new();
+        private const string FileName = "scores.txt";
 
-        public ScoreManager(string filePath = "scores.txt")
+        public void SaveResult(string name, int score)
         {
-            _scoreFilePath = filePath;
-            LoadResults();
+            using var sw = new StreamWriter(FileName, true);
+            sw.WriteLine($"{name},{score}");
         }
 
-        public void SaveResult(string playerName, int score)
+        public void ShowResults(int top = 10)
         {
-            _scores.Add((playerName, score));
-            try
-            {
-                using StreamWriter writer = new StreamWriter(_scoreFilePath, append: true);
-                writer.WriteLine($"{playerName}:{score}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при сохранении счёта: {ex.Message}");
-            }
-        }
+            if (!File.Exists(FileName)) return;
 
-        private void LoadResults()
-        {
-            if (!File.Exists(_scoreFilePath))
-                return;
+            var lines = File.ReadAllLines(FileName);
+            Array.Sort(lines, (a, b) => int.Parse(b.Split(',')[1]).CompareTo(int.Parse(a.Split(',')[1])));
 
-            try
+            Console.WriteLine("TOP SCORES:");
+            for (int i = 0; i < Math.Min(top, lines.Length); i++)
             {
-                foreach (var line in File.ReadAllLines(_scoreFilePath))
-                {
-                    var parts = line.Split(':');
-                    if (parts.Length == 2 && int.TryParse(parts[1], out int score))
-                    {
-                        _scores.Add((parts[0], score));
-                    }
-                }
+                var parts = lines[i].Split(',');
+                Console.WriteLine($"{i + 1}. {parts[0]} - {parts[1]}");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при загрузке счёта: {ex.Message}");
-            }
-        }
-
-        // Метод без аргументов, теперь компилируется корректно
-        public void ShowResults()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Таблица результатов ===\n");
-
-            if (_scores.Count == 0)
-            {
-                Console.WriteLine("Пока нет сохранённых результатов.");
-            }
-            else
-            {
-                int rank = 1;
-                foreach (var (player, score) in _scores)
-                {
-                    Console.WriteLine($"{rank}. {player} — {score}");
-                    rank++;
-                }
-            }
-
-            Console.WriteLine("\nНажмите любую клавишу для выхода...");
-            Console.ReadKey(true);
         }
     }
 }

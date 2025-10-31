@@ -2,42 +2,39 @@
 
 namespace SnakeGame
 {
-    // Vaenlane – liikuva madu baasklass
-    public class Enemy : Snake
+    public class Enemy
     {
-        private Random random = new Random();
+        public Position Pos { get; private set; }
+        private readonly Random random = new();
 
-        public Enemy(Position startPos, Direction dir, int length)
-            : base(startPos, dir, length)
+        public Enemy(int x, int y)
         {
+            Pos = new Position(x, y);
         }
 
-        // Liikumine juhuslikult või peegeldusmoodis
         public void MoveRandom(int width, int height)
         {
-            Direction dir = (Direction)random.Next(0, 4);
-            SetDirection(dir);
+            int dir = random.Next(4);
+            switch (dir)
+            {
+                case 0: Pos.Y--; break;
+                case 1: Pos.Y++; break;
+                case 2: Pos.X--; break;
+                case 3: Pos.X++; break;
+            }
 
-            Move();
-
-            // Kontroll piiride vastu
-            Position head = GetHead();
-            if (head.X <= 0) head.X = 1;
-            if (head.X >= width - 1) head.X = width - 2;
-            if (head.Y <= 0) head.Y = 1;
-            if (head.Y >= height - 1) head.Y = height - 2;
+            if (Pos.X < 1) Pos.X = width - 2;
+            if (Pos.X >= width - 1) Pos.X = 1;
+            if (Pos.Y < 1) Pos.Y = height - 2;
+            if (Pos.Y >= height - 1) Pos.Y = 1;
         }
 
-        // Kas vaenlane tabas mängijat
-        public bool CheckCollision(Snake player)
+        public void Draw(ConsoleColor color)
         {
-            Position head = GetHead();
-            foreach (var part in player.Body)
-            {
-                if (head.Equals(part))
-                    return true;
-            }
-            return false;
+            Console.ForegroundColor = color;
+            Console.SetCursorPosition(Pos.X, Pos.Y);
+            Console.Write('E');
+            Console.ResetColor();
         }
     }
 }

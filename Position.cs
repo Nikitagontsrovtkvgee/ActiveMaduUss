@@ -1,6 +1,5 @@
 ﻿namespace SnakeGame
 {
-    // Määrab koordinaadi punkt
     public class Position
     {
         public int X { get; set; }
@@ -12,14 +11,14 @@
             Y = y;
         }
 
-        public bool Equals(Position other)
-        {
-            return other != null && X == other.X && Y == other.Y;
-        }
-
         public Position Copy()
         {
             return new Position(X, Y);
+        }
+
+        public bool Equals(Position other)
+        {
+            return other != null && X == other.X && Y == other.Y;
         }
     }
 }

@@ -6,14 +6,21 @@
         public char Symbol { get; private set; }
         private int duration;
 
-        public Bonus(Position pos, char sym, int time)
+        public Bonus(Position pos, char symbol, int duration)
         {
             Pos = pos;
-            Symbol = sym;
-            duration = time;
+            Symbol = symbol;
+            this.duration = duration;
         }
 
-        public void Tick() => duration--;
-        public bool IsExpired() => duration <= 0;
+        public void Tick()
+        {
+            duration--;
+        }
+
+        public bool IsExpired()
+        {
+            return duration <= 0;
+        }
     }
 }
